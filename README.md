@@ -13,7 +13,7 @@
 [https://www.bilibili.com/video/BV1yb421E7CX/](https://www.bilibili.com/video/BV1yb421E7CX/)**
 
 **毕业设计所有选题地址：
-[https://github.com/ynwynw/allProject](https://github.com/ynwynw/allProject)**
+[https://github.com/zhengjianzhong0107/allProject](https://github.com/zhengjianzhong0107/allProject)**
 
 ## 基于Java+Springboot+vue+小程序的个人健康管理系统小程序(源代码+数据库+15000字论文)152
 
