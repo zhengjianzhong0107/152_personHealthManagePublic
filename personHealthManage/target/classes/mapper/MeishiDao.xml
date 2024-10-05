@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dao.MeishiDao">
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        a.id as id
+        ,a.meishi_name as meishiName
+        ,a.meishi_photo as meishiPhoto
+        ,a.meishi_types as meishiTypes
+        ,a.meishi_num as meishiNum
+        ,a.zan_number as zanNumber
+        ,a.cai_number as caiNumber
+        ,a.meishi_content as meishiContent
+        ,a.meishi_delete as meishiDelete
+        ,a.insert_time as insertTime
+        ,a.create_time as createTime
+    </sql>
+    <select id="selectListView" parameterType="map" resultType="com.entity.view.MeishiView" >
+        SELECT
+        <include refid="Base_Column_List" />
+        <!-- 级联表的字段 -->
+
+        FROM meishi  a
+
+        <where>
+            <if test="params.ids != null">
+                and a.id in
+                <foreach item="item" index="index" collection="params.ids" open="(" separator="," close=")">
+                #{item}
+                </foreach>
+            </if>
+            <if test=" params.meishiName != '' and params.meishiName != null and params.meishiName != 'null' ">
+                and a.meishi_name like CONCAT('%',#{params.meishiName},'%')
+            </if>
+            <if test="params.meishiTypes != null and params.meishiTypes != ''">
+                and a.meishi_types = #{params.meishiTypes}
+            </if>
+            <if test="params.meishiNumStart != null and params.meishiNumStart != ''">
+                <![CDATA[  and a.meishi_num >= #{params.meishiNumStart}   ]]>
+            </if>
+            <if test="params.meishiNumEnd != null and params.meishiNumEnd != ''">
+                <![CDATA[  and a.meishi_num <= #{params.meishiNumEnd}   ]]>
+            </if>
+             <if test="params.meishiNum != null and params.meishiNum != ''">
+                and a.meishi_num = #{params.meishiNum}
+             </if>
+            <if test="params.zanNumberStart != null and params.zanNumberStart != ''">
+                <![CDATA[  and a.zan_number >= #{params.zanNumberStart}   ]]>
+            </if>
+            <if test="params.zanNumberEnd != null and params.zanNumberEnd != ''">
+                <![CDATA[  and a.zan_number <= #{params.zanNumberEnd}   ]]>
+            </if>
+             <if test="params.zanNumber != null and params.zanNumber != ''">
+                and a.zan_number = #{params.zanNumber}
+             </if>
+            <if test="params.caiNumberStart != null and params.caiNumberStart != ''">
+                <![CDATA[  and a.cai_number >= #{params.caiNumberStart}   ]]>
+            </if>
+            <if test="params.caiNumberEnd != null and params.caiNumberEnd != ''">
+                <![CDATA[  and a.cai_number <= #{params.caiNumberEnd}   ]]>
+            </if>
+             <if test="params.caiNumber != null and params.caiNumber != ''">
+                and a.cai_number = #{params.caiNumber}
+             </if>
+            <if test=" params.meishiContent != '' and params.meishiContent != null and params.meishiContent != 'null' ">
+                and a.meishi_content like CONCAT('%',#{params.meishiContent},'%')
+            </if>
+            <if test="params.meishiDeleteStart != null and params.meishiDeleteStart != ''">
+                <![CDATA[  and a.meishi_delete >= #{params.meishiDeleteStart}   ]]>
+            </if>
+            <if test="params.meishiDeleteEnd != null and params.meishiDeleteEnd != ''">
+                <![CDATA[  and a.meishi_delete <= #{params.meishiDeleteEnd}   ]]>
+            </if>
+             <if test="params.meishiDelete != null and params.meishiDelete != ''">
+                and a.meishi_delete = #{params.meishiDelete}
+             </if>
+            <if test=" params.insertTimeStart != '' and params.insertTimeStart != null ">
+                <![CDATA[  and UNIX_TIMESTAMP(a.insert_time) >= UNIX_TIMESTAMP(#{params.insertTimeStart}) ]]>
+            </if>
+            <if test=" params.insertTimeEnd != '' and params.insertTimeEnd != null ">
+                <![CDATA[  and UNIX_TIMESTAMP(a.insert_time) <= UNIX_TIMESTAMP(#{params.insertTimeEnd}) ]]>
+            </if>
+
+        </where>
+        order by a.${params.sort} ${params.order}
+    </select>
+
+</mapper>

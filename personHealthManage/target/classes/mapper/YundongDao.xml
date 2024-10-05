@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dao.YundongDao">
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        a.id as id
+        ,a.yundong_name as yundongName
+        ,a.yundong_photo as yundongPhoto
+        ,a.yundong_types as yundongTypes
+        ,a.yundong_video as yundongVideo
+        ,a.yundong_num as yundongNum
+        ,a.zan_number as zanNumber
+        ,a.cai_number as caiNumber
+        ,a.yundong_content as yundongContent
+        ,a.yundong_delete as yundongDelete
+        ,a.insert_time as insertTime
+        ,a.create_time as createTime
+    </sql>
+    <select id="selectListView" parameterType="map" resultType="com.entity.view.YundongView" >
+        SELECT
+        <include refid="Base_Column_List" />
+        <!-- 级联表的字段 -->
+
+        FROM yundong  a
+
+        <where>
+            <if test="params.ids != null">
+                and a.id in
+                <foreach item="item" index="index" collection="params.ids" open="(" separator="," close=")">
+                #{item}
+                </foreach>
+            </if>
+            <if test=" params.yundongName != '' and params.yundongName != null and params.yundongName != 'null' ">
+                and a.yundong_name like CONCAT('%',#{params.yundongName},'%')
+            </if>
+            <if test="params.yundongTypes != null and params.yundongTypes != ''">
+                and a.yundong_types = #{params.yundongTypes}
+            </if>
+            <if test=" params.yundongVideo != '' and params.yundongVideo != null and params.yundongVideo != 'null' ">
+                and a.yundong_video like CONCAT('%',#{params.yundongVideo},'%')
+            </if>
+            <if test="params.yundongNumStart != null and params.yundongNumStart != ''">
+                <![CDATA[  and a.yundong_num >= #{params.yundongNumStart}   ]]>
+            </if>
+            <if test="params.yundongNumEnd != null and params.yundongNumEnd != ''">
+                <![CDATA[  and a.yundong_num <= #{params.yundongNumEnd}   ]]>
+            </if>
+             <if test="params.yundongNum != null and params.yundongNum != ''">
+                and a.yundong_num = #{params.yundongNum}
+             </if>
+            <if test="params.zanNumberStart != null and params.zanNumberStart != ''">
+                <![CDATA[  and a.zan_number >= #{params.zanNumberStart}   ]]>
+            </if>
+            <if test="params.zanNumberEnd != null and params.zanNumberEnd != ''">
+                <![CDATA[  and a.zan_number <= #{params.zanNumberEnd}   ]]>
+            </if>
+             <if test="params.zanNumber != null and params.zanNumber != ''">
+                and a.zan_number = #{params.zanNumber}
+             </if>
+            <if test="params.caiNumberStart != null and params.caiNumberStart != ''">
+                <![CDATA[  and a.cai_number >= #{params.caiNumberStart}   ]]>
+            </if>
+            <if test="params.caiNumberEnd != null and params.caiNumberEnd != ''">
+                <![CDATA[  and a.cai_number <= #{params.caiNumberEnd}   ]]>
+            </if>
+             <if test="params.caiNumber != null and params.caiNumber != ''">
+                and a.cai_number = #{params.caiNumber}
+             </if>
+            <if test=" params.yundongContent != '' and params.yundongContent != null and params.yundongContent != 'null' ">
+                and a.yundong_content like CONCAT('%',#{params.yundongContent},'%')
+            </if>
+            <if test="params.yundongDeleteStart != null and params.yundongDeleteStart != ''">
+                <![CDATA[  and a.yundong_delete >= #{params.yundongDeleteStart}   ]]>
+            </if>
+            <if test="params.yundongDeleteEnd != null and params.yundongDeleteEnd != ''">
+                <![CDATA[  and a.yundong_delete <= #{params.yundongDeleteEnd}   ]]>
+            </if>
+             <if test="params.yundongDelete != null and params.yundongDelete != ''">
+                and a.yundong_delete = #{params.yundongDelete}
+             </if>
+            <if test=" params.insertTimeStart != '' and params.insertTimeStart != null ">
+                <![CDATA[  and UNIX_TIMESTAMP(a.insert_time) >= UNIX_TIMESTAMP(#{params.insertTimeStart}) ]]>
+            </if>
+            <if test=" params.insertTimeEnd != '' and params.insertTimeEnd != null ">
+                <![CDATA[  and UNIX_TIMESTAMP(a.insert_time) <= UNIX_TIMESTAMP(#{params.insertTimeEnd}) ]]>
+            </if>
+
+        </where>
+        order by a.${params.sort} ${params.order}
+    </select>
+
+</mapper>

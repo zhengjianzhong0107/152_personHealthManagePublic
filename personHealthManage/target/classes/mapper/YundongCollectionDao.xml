@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dao.YundongCollectionDao">
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        a.id as id
+        ,a.yundong_id as yundongId
+        ,a.yonghu_id as yonghuId
+        ,a.yundong_collection_types as yundongCollectionTypes
+        ,a.insert_time as insertTime
+        ,a.create_time as createTime
+    </sql>
+    <select id="selectListView" parameterType="map" resultType="com.entity.view.YundongCollectionView" >
+        SELECT
+        <include refid="Base_Column_List" />
+        <!-- 级联表的字段 -->
+        ,yonghu.yonghu_name as yonghuName
+        ,yonghu.yonghu_photo as yonghuPhoto
+        ,yonghu.yonghu_id_number as yonghuIdNumber
+        ,yonghu.yonghu_phone as yonghuPhone
+        ,yonghu.yonghu_email as yonghuEmail
+        ,yonghu.yonghu_delete as yonghuDelete
+        ,yundong.yundong_name as yundongName
+        ,yundong.yundong_photo as yundongPhoto
+        ,yundong.yundong_types as yundongTypes
+        ,yundong.yundong_video as yundongVideo
+        ,yundong.yundong_num as yundongNum
+        ,yundong.zan_number as zanNumber
+        ,yundong.cai_number as caiNumber
+        ,yundong.yundong_content as yundongContent
+        ,yundong.yundong_delete as yundongDelete
+
+        FROM yundong_collection  a
+        left JOIN yonghu yonghu ON a.yonghu_id = yonghu.id
+        left JOIN yundong yundong ON a.yundong_id = yundong.id
+
+        <where>
+            <if test="params.ids != null">
+                and a.id in
+                <foreach item="item" index="index" collection="params.ids" open="(" separator="," close=")">
+                #{item}
+                </foreach>
+            </if>
+            <if test="params.yundongId != null and params.yundongId != ''">
+                and (
+                    a.yundong_id = #{params.yundongId}
+                )
+            </if>
+            <if test="params.yonghuId != null and params.yonghuId != ''">
+                and (
+                    a.yonghu_id = #{params.yonghuId}
+                )
+            </if>
+            <if test="params.yundongCollectionTypes != null and params.yundongCollectionTypes != ''">
+                and a.yundong_collection_types = #{params.yundongCollectionTypes}
+            </if>
+            <if test=" params.insertTimeStart != '' and params.insertTimeStart != null ">
+                <![CDATA[  and UNIX_TIMESTAMP(a.insert_time) >= UNIX_TIMESTAMP(#{params.insertTimeStart}) ]]>
+            </if>
+            <if test=" params.insertTimeEnd != '' and params.insertTimeEnd != null ">
+                <![CDATA[  and UNIX_TIMESTAMP(a.insert_time) <= UNIX_TIMESTAMP(#{params.insertTimeEnd}) ]]>
+            </if>
+
+                <!-- 判断用户的id不为空 -->
+            <if test=" params.yonghuIdNotNull != '' and params.yonghuIdNotNull != null and params.yonghuIdNotNull != 'null' ">
+                and a.yonghu_id IS NOT NULL
+            </if>
+            <if test=" params.yonghuName != '' and params.yonghuName != null and params.yonghuName != 'null' ">
+                and yonghu.yonghu_name like CONCAT('%',#{params.yonghuName},'%')
+            </if>
+            <if test=" params.yonghuIdNumber != '' and params.yonghuIdNumber != null and params.yonghuIdNumber != 'null' ">
+                and yonghu.yonghu_id_number like CONCAT('%',#{params.yonghuIdNumber},'%')
+            </if>
+            <if test=" params.yonghuPhone != '' and params.yonghuPhone != null and params.yonghuPhone != 'null' ">
+                and yonghu.yonghu_phone like CONCAT('%',#{params.yonghuPhone},'%')
+            </if>
+            <if test=" params.yonghuEmail != '' and params.yonghuEmail != null and params.yonghuEmail != 'null' ">
+                and yonghu.yonghu_email like CONCAT('%',#{params.yonghuEmail},'%')
+            </if>
+            <if test="params.yonghuDeleteStart != null  and params.yonghuDeleteStart != '' ">
+                <![CDATA[  and yonghu.yonghu_delete >= #{params.yonghuDeleteStart}   ]]>
+            </if>
+            <if test="params.yonghuDeleteEnd != null  and params.yonghuDeleteEnd != '' ">
+                <![CDATA[  and yonghu.yonghu_delete <= #{params.yonghuDeleteEnd}   ]]>
+            </if>
+            <if test="params.yonghuDelete != null  and params.yonghuDelete != '' ">
+                and yonghu.yonghu_delete = #{params.yonghuDelete}
+            </if>
+                <!-- 判断运动教程的id不为空 -->
+            <if test=" params.yundongIdNotNull != '' and params.yundongIdNotNull != null and params.yundongIdNotNull != 'null' ">
+                and a.yundong_id IS NOT NULL
+            </if>
+            <if test=" params.yundongName != '' and params.yundongName != null and params.yundongName != 'null' ">
+                and yundong.yundong_name like CONCAT('%',#{params.yundongName},'%')
+            </if>
+            <if test="params.yundongTypes != null  and params.yundongTypes != ''">
+                and yundong.yundong_types = #{params.yundongTypes}
+            </if>
+
+            <if test=" params.yundongVideo != '' and params.yundongVideo != null and params.yundongVideo != 'null' ">
+                and yundong.yundong_video like CONCAT('%',#{params.yundongVideo},'%')
+            </if>
+            <if test="params.yundongNumStart != null  and params.yundongNumStart != '' ">
+                <![CDATA[  and yundong.yundong_num >= #{params.yundongNumStart}   ]]>
+            </if>
+            <if test="params.yundongNumEnd != null  and params.yundongNumEnd != '' ">
+                <![CDATA[  and yundong.yundong_num <= #{params.yundongNumEnd}   ]]>
+            </if>
+            <if test="params.yundongNum != null  and params.yundongNum != '' ">
+                and yundong.yundong_num = #{params.yundongNum}
+            </if>
+            <if test="params.zanNumberStart != null  and params.zanNumberStart != '' ">
+                <![CDATA[  and yundong.zan_number >= #{params.zanNumberStart}   ]]>
+            </if>
+            <if test="params.zanNumberEnd != null  and params.zanNumberEnd != '' ">
+                <![CDATA[  and yundong.zan_number <= #{params.zanNumberEnd}   ]]>
+            </if>
+            <if test="params.zanNumber != null  and params.zanNumber != '' ">
+                and yundong.zan_number = #{params.zanNumber}
+            </if>
+            <if test="params.caiNumberStart != null  and params.caiNumberStart != '' ">
+                <![CDATA[  and yundong.cai_number >= #{params.caiNumberStart}   ]]>
+            </if>
+            <if test="params.caiNumberEnd != null  and params.caiNumberEnd != '' ">
+                <![CDATA[  and yundong.cai_number <= #{params.caiNumberEnd}   ]]>
+            </if>
+            <if test="params.caiNumber != null  and params.caiNumber != '' ">
+                and yundong.cai_number = #{params.caiNumber}
+            </if>
+            <if test=" params.yundongContent != '' and params.yundongContent != null and params.yundongContent != 'null' ">
+                and yundong.yundong_content like CONCAT('%',#{params.yundongContent},'%')
+            </if>
+            <if test="params.yundongDeleteStart != null  and params.yundongDeleteStart != '' ">
+                <![CDATA[  and yundong.yundong_delete >= #{params.yundongDeleteStart}   ]]>
+            </if>
+            <if test="params.yundongDeleteEnd != null  and params.yundongDeleteEnd != '' ">
+                <![CDATA[  and yundong.yundong_delete <= #{params.yundongDeleteEnd}   ]]>
+            </if>
+            <if test="params.yundongDelete != null  and params.yundongDelete != '' ">
+                and yundong.yundong_delete = #{params.yundongDelete}
+            </if>
+            <if test=" params.insertTimeStart != '' and params.insertTimeStart != null ">
+                <![CDATA[  and UNIX_TIMESTAMP(yundong.insert_time) >= UNIX_TIMESTAMP(#{params.insertTimeStart}) ]]>
+            </if>
+            <if test=" params.insertTimeEnd != '' and params.insertTimeEnd != null ">
+                <![CDATA[  and UNIX_TIMESTAMP(yundong.insert_time) <= UNIX_TIMESTAMP(#{params.insertTimeEnd}) ]]>
+            </if>
+        </where>
+        order by a.${params.sort} ${params.order}
+    </select>
+
+</mapper>
